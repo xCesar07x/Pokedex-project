@@ -9,9 +9,11 @@ import ProtectedRoutes from './components/ProtectedRoutes'
 
 function App() {
   // const [count, setCount] = useState(0)
-
+  
+  
   return (
-    <div className="App">
+    <div className="App" >
+      
      <HashRouter>
       <Routes>
         <Route path='/' element={<InputName/>}/>

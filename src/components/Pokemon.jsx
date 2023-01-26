@@ -4,32 +4,37 @@ import { set } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import PokemonCard from './PokemonCard';
+import Pagination from './Pagination';
 import pokedex from '../assets/pokedex.svg'
 import rectagle147 from '../assets/rectagle-147.svg'
 import rectagle148 from '../assets/rectagle-148.svg'
 import pokeball from '../assets/pokeball.png'
 
 
-const Pokemon = () => {
+const Pokemon = ({}) => {
 
     const userName = useSelector(state => state.userName)
 
-    const [pokemons, setPokemons ] = useState([]);
-    const [ inputSearch, setInputSearch] = useState("");
+    const [pokemons, setPokemons] = useState([]);
+    const [inputSearch, setInputSearch] = useState("");
     const [types, setTypes] = useState([])
+
+    //Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const [listPerPage, setListPerPage] = useState(10);
 
     const navigate = useNavigate();
 
     useEffect(() => {
         axios.get('https://pokeapi.co/api/v2/pokemon/')
-        .then(res => setPokemons(res.data.results))
+            .then(res => setPokemons(res.data.results))
 
         axios.get('https://pokeapi.co/api/v2/type/')
-        .then(res => setTypes(res.data.results))
+            .then(res => setTypes(res.data.results))
 
-    },[]);
+    }, []);
 
-    
+
 
     const search = () => {
         navigate(`/pokemon/${inputSearch.toLocaleLowerCase()}`)
@@ -41,88 +46,107 @@ const Pokemon = () => {
     const filterType = (e) => {
         // alert(e.target.value)
         axios.get(e.target.value)
-         .then(res => setPokemons(res.data.pokemon))
+            .then(res => setPokemons(res.data.pokemon))
     }
 
     // console.log(pokemons)
+
+    //Get current list
+    const indexOfLastPost = currentPage * listPerPage;
+    const indexOfFirstPost = indexOfLastPost - listPerPage;
+    const currentList = pokemons.slice(indexOfFirstPost, indexOfLastPost)
+
+    // currentList={currentList}
 
     return (
         <div>
 
 
-            
-            
+
+
             <img className='pokeball' src={pokeball} alt="" />
-            
+
             <img className='pokedex-icon' src={pokedex} alt="" />
 
             <img className='nav-rectagle147' src={rectagle147} alt="" />
-            
 
-            
-            
 
-            
-            
+
+
+
+
+
             <img className='nav-rectagle148' src={rectagle148} alt="" />
-            
 
-            
-            
 
-            
+
+
+
+
 
             <h1 className='pokemon-pharse'>
-                <p style={{color: "#FE1936"}}>
-                    Welcome {userName}, 
-                </p> <b style={{color: "transparent"}}>Q</b>
+                <p style={{ color: "#FE1936" }}>
+                    Welcome {userName},
+                </p> <b style={{ color: "transparent" }}>Q</b>
                 here you can find your favorite Pokemon
             </h1>
-
+            
             <div className='input-select'>
-              
-               <div className='input-button-pokemon'>
-                   <input className='pokemon-input'
-                   type="text" 
-                   placeholder='search pokemon or id'
-                   value={ inputSearch }
-                   onChange={e => setInputSearch(e.target.value)}
-                   />
-                   <button className='pokemon-search'
-                   onClick={search}>Search</button>
-               </div>
 
-              <div style={{paddingTop: "10px"}}>
-                    <select  
-                    className='pokemon-select'
-                    onChange={filterType} name="" id=""
+                <div className='input-button-pokemon'>
+                    <input className='pokemon-input'
+                        type="text"
+                        placeholder='search pokemon or id'
+                        value={inputSearch}
+                        onChange={e => setInputSearch(e.target.value)}
+                    />
+                    <button className='pokemon-search'
+                        onClick={search}>Search</button>
+                </div>
+
+                
+
+                <div style={{ paddingTop: "10px" }}>
+                    <select
+                        className='pokemon-select'
+                        onChange={filterType} name="" id=""
                     >
                         <option disabled={false}>All pokemon</option>
                         {
-                           types.map(type => (
-                            
-                            <option  
-                            value={type.url} key={type.url}>
-                                
-                                {type.name}
-                            </option>
-                           ))
+                            types.map(type => (
+
+                                <option
+                                    value={type.url} key={type.url}>
+
+                                    {type.name}
+                                </option>
+                            ))
                         }
                     </select>
 
-              </div>
+                </div>
             </div>
+            
 
             <ul className='pokemon-list' >
                 {
-                    pokemons.map(pokemon => (
+                    currentList.map(pokemon => (
                         <PokemonCard 
-                        url={pokemon.url ? pokemon.url : pokemon.pokemon.url}
-                        key={pokemon.url ? pokemon.url : pokemon.pokemon.url}
+                            url={pokemon.url ? pokemon.url : pokemon.pokemon.url}
+                            key={pokemon.url ? pokemon.url : pokemon.pokemon.url}
                         />
                     ))
                 }
             </ul>
+
+            {/* <nav>
+                <Pagination listPerPage={ listPerPage } totalList={ currentList.length }/>
+            </nav> */}
+
+            <footer style={{display: "flex", justifyContent: "center", alignItems: "center", padding: "10px"}}>
+                Hecho en  ©Academlo
+            </footer>
+            
         </div>
     );
 };
