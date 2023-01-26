@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 export const userNameSlice = createSlice({
     
 		name: 'userName',
-    initialState: "cesar",
+    initialState: "",
     reducers: {
       changeUserName: (state, action) => {
         const inputValue = action.payload;
