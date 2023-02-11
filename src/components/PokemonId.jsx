@@ -31,6 +31,12 @@ const PokemonId = () => {
             .then(res => setTypes(res.data.types[1].type))
 
     }, []);
+
+    window.scrollTo({
+        top: 10,
+        left: 0,
+        behavior: 'smooth'
+    });
       
     // console.log(pokemon);
     // console.log(moves)
@@ -265,10 +271,6 @@ const PokemonId = () => {
 
                 </div>
             </div>
-
-
-
-
 
             <div className='pokemon-moves'>
                 <h2>
